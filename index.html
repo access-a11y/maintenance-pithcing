@@ -331,15 +331,28 @@
             background-color: #e74c3c;
         }
         
-        @keyframes slideIn {
-            from {
-                transform: translateX(100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(0);
-                opacity: 1;
-            }
+        .save-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #27ae60;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+            animation: fadeInOut 2s ease-in-out;
+            z-index: 1000;
+        }
+        
+        .save-indicator.show {
+            display: block;
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
         }
         
         .days-remaining {
@@ -437,15 +450,65 @@
             
             <div class="sample-format">
                 <h3>📋 Required CSV/Excel Format:</h3>
-                <code>
-                    Client Name | Order Amount | Order Completed Date | Review Given | Client Status<br>
-                    Example: ABC Company | 5000 | 2024-11-15 | Yes | No Issue<br>
-                    Example: XYZ Corp | 3500 | 2024-10-30 | No | Regular Client
+                <p style="color: #856404; margin-bottom: 10px;"><strong>Your Excel sheet must have exactly these 5 columns (in any order):</strong></p>
+                <div style="background-color: #f8f9fa; padding: 15px; border-radius: 3px; margin-bottom: 15px;">
+                    <h4 style="color: #495057; margin-bottom: 10px;">Column Headers Required:</h4>
+                    <ol style="margin-left: 20px; color: #495057;">
+                        <li><strong>Client Name</strong> - The name of your client/company</li>
+                        <li><strong>Order Amount</strong> - The total order value (number only, no currency symbols)</li>
+                        <li><strong>Order Completed Date</strong> - Date when the order was completed (format: YYYY-MM-DD)</li>
+                        <li><strong>Review Given</strong> - Whether client gave a review (must be: Yes or No)</li>
+                        <li><strong>Client Status</strong> - Current status of the client (see options below)</li>
+                    </ol>
+                </div>
+                
+                <div style="background-color: #e7f3ff; padding: 15px; border-radius: 3px; margin-bottom: 15px; border: 1px solid #b3d9ff;">
+                    <h4 style="color: #004085; margin-bottom: 10px;">Client Status Options (use exactly one of these):</h4>
+                    <ul style="margin-left: 20px; color: #004085;">
+                        <li><strong>"No Issue"</strong> - Client eligible for maintenance pitching</li>
+                        <li><strong>"Regular Client"</strong> - Already on maintenance plan (won't be pitched)</li>
+                        <li><strong>"New Order in Progress"</strong> - Has active order ongoing (won't be pitched)</li>
+                        <li><strong>"NTO Client"</strong> - Not to outreach (won't be pitched)</li>
+                    </ul>
+                </div>
+                
+                <h4 style="color: #856404; margin-bottom: 10px;">Example Excel Data:</h4>
+                <code style="display: block; background-color: white; border: 1px solid #dee2e6;">
+                    <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
+                        <tr style="background-color: #f1f3f4;">
+                            <th style="border: 1px solid #dee2e6; padding: 8px;">Client Name</th>
+                            <th style="border: 1px solid #dee2e6; padding: 8px;">Order Amount</th>
+                            <th style="border: 1px solid #dee2e6; padding: 8px;">Order Completed Date</th>
+                            <th style="border: 1px solid #dee2e6; padding: 8px;">Review Given</th>
+                            <th style="border: 1px solid #dee2e6; padding: 8px;">Client Status</th>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #dee2e6; padding: 8px;">ABC Company</td>
+                            <td style="border: 1px solid #dee2e6; padding: 8px;">5000</td>
+                            <td style="border: 1px solid #dee2e6; padding: 8px;">2024-11-15</td>
+                            <td style="border: 1px solid #dee2e6; padding: 8px;">Yes</td>
+                            <td style="border: 1px solid #dee2e6; padding: 8px;">No Issue</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #dee2e6; padding: 8px;">XYZ Corp</td>
+                            <td style="border: 1px solid #dee2e6; padding: 8px;">3500</td>
+                            <td style="border: 1px solid #dee2e6; padding: 8px;">2024-10-30</td>
+                            <td style="border: 1px solid #dee2e6; padding: 8px;">No</td>
+                            <td style="border: 1px solid #dee2e6; padding: 8px;">Regular Client</td>
+                        </tr>
+                    </table>
                 </code>
-                <p style="margin-top: 10px; color: #856404;">
-                    <strong>Note:</strong> Dates should be in YYYY-MM-DD format. Review Given should be "Yes" or "No".<br>
-                    Client Status options: "No Issue", "Regular Client", "New Order in Progress", "NTO Client"
-                </p>
+                
+                <div style="background-color: #fff3cd; padding: 10px; border-radius: 3px; margin-top: 15px; border: 1px solid #ffc107;">
+                    <strong>⚠️ Important Notes:</strong>
+                    <ul style="margin-left: 20px; margin-top: 5px;">
+                        <li>Dates must be in YYYY-MM-DD format (e.g., 2024-12-25)</li>
+                        <li>Review Given must be exactly "Yes" or "No" (case doesn't matter)</li>
+                        <li>Order Amount should be numbers only (no $ or commas)</li>
+                        <li>Client Status must match one of the four options exactly</li>
+                        <li>Column headers must match exactly as shown above</li>
+                    </ul>
+                </div>
             </div>
         </div>
         
@@ -1005,11 +1068,6 @@
         
         // Initialize
         loadData();
-        
-        // Load sample data automatically if no data exists
-        if (clients.length === 0) {
-            addSampleData();
-        }
         
         // Check for overdue pitches every minute
         setInterval(() => {
