@@ -1,0 +1,13 @@
+{
+  "name": "seo-pitching-tracker",
+  "version": "1.0.0",
+  "description": "SEO Maintenance Pitching Tracker",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build needed'",
+    "start": "vercel"
+  },
+  "dependencies": {
+    "@vercel/kv": "^1.0.0"
+  }
+}
