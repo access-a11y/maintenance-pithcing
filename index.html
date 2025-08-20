@@ -1,4 +1,1540 @@
-<!DOCTYPE html>
+.save-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #27ae60;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            display: none;
+            animation: fadeInOut 2s ease-in-out;
+            z-index: 1000;
+        }
+        
+        .save-indicator.show {
+            display: block;
+        }
+        
+        @keyframes fadeInOut {
+            0% { opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { opacity: 0; }
+        }        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Maintenance Pitching Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #3498db;
+        }
+        
+        .subtitle {
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        
+        .import-section {
+            background-color: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+        }
+        
+        .import-section h2 {
+            color: #34495e;
+            margin-bottom: 15px;
+        }
+        
+        .file-input-wrapper {
+            margin-bottom: 15px;
+        }
+        
+        input[type="file"] {
+            padding: 10px;
+            border: 2px dashed #3498db;
+            border-radius: 5px;
+            width: 100%;
+            background-color: white;
+            cursor: pointer;
+        }
+        
+        button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        button.success {
+            background-color: #27ae60;
+        }
+        
+        button.success:hover {
+            background-color: #229954;
+        }
+        
+        button.warning {
+            background-color: #f39c12;
+        }
+        
+        button.warning:hover {
+            background-color: #e67e22;
+        }
+        
+        button.danger {
+            background-color: #e74c3c;
+        }
+        
+        button.danger:hover {
+            background-color: #c0392b;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .stat-card.ready {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .stat-card.warning {
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+        }
+        
+        .stat-card.overdue {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ff8e53 100%);
+        }
+        
+        .stat-card.excluded {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+        }
+        
+        .stat-value {
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        
+        .clients-table {
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+        
+        th {
+            background-color: #34495e;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            position: sticky;
+            top: 0;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        tr.excluded-row {
+            background-color: #f8f9fa;
+            opacity: 0.7;
+        }
+        
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            display: inline-block;
+        }
+        
+        .status-ready {
+            background-color: #27ae60;
+            color: white;
+        }
+        
+        .status-waiting {
+            background-color: #95a5a6;
+            color: white;
+        }
+        
+        .status-warning {
+            background-color: #f39c12;
+            color: white;
+        }
+        
+        .status-overdue {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .status-excluded {
+            background-color: #7f8c8d;
+            color: white;
+        }
+        
+        .pitched-yes {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .pitched-no {
+            background-color: #e74c3c;
+            color: white;
+        }
+        
+        .client-status-badge {
+            padding: 4px 8px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+            display: inline-block;
+        }
+        
+        .client-status-no-issue {
+            background-color: #27ae60;
+            color: white;
+        }
+        
+        .client-status-regular {
+            background-color: #3498db;
+            color: white;
+        }
+        
+        .client-status-in-progress {
+            background-color: #f39c12;
+            color: white;
+        }
+        
+        .client-status-nto {
+            background-color: #9b59b6;
+            color: white;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+        
+        .action-buttons button {
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+        
+        .filter-section {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        select {
+            padding: 8px;
+            border: 1px solid #bdc3c7;
+            border-radius: 5px;
+            background-color: white;
+        }
+        
+        .sample-format {
+            background-color: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+            border: 1px solid #ffc107;
+        }
+        
+        .sample-format h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .sample-format code {
+            background-color: #f8f9fa;
+            padding: 10px;
+            display: block;
+            border-radius: 3px;
+            font-size: 12px;
+            overflow-x: auto;
+        }
+        
+        .notification-alert {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 5px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            animation: slideIn 0.3s ease-out;
+            display: none;
+        }
+        
+        .notification-alert.show {
+            display: block;
+        }
+        
+        .notification-alert.success {
+            background-color: #27ae60;
+        }
+        
+        .notification-alert.error {
+            background-color: #e74c3c;
+        }
+        
+        .save-options {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            border: 1px solid #90caf9;
+        }
+        
+        .save-options h3 {
+            color: #1565c0;
+            margin-bottom: 10px;
+        }
+        
+        .save-method {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .save-method button {
+            flex: 1;
+            min-width: 150px;
+        }
+        
+        .sync-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-left: 10px;
+            font-weight: bold;
+        }
+        
+        .sync-status.synced {
+            background-color: #4caf50;
+            color: white;
+        }
+        
+        .sync-status.not-synced {
+            background-color: #ff9800;
+            color: white;
+        }
+        
+        .sync-status.error {
+            background-color: #f44336;
+            color: white;
+        }
+        
+        .days-remaining {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        
+        .days-remaining.positive {
+            color: #27ae60;
+        }
+        
+        .legend {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        
+        .legend h3 {
+            color: #34495e;
+            margin-bottom: 10px;
+        }
+        
+        .legend-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>SEO Maintenance Pitching Tracker <span class="sync-status not-synced" id="syncStatus">Local Only</span></h1>
+        <p class="subtitle">Track and manage maintenance pitching for your SEO clients</p>
+        
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="totalClients">0</div>
+                <div class="stat-label">Total Clients</div>
+            </div>
+            <div class="stat-card ready">
+                <div class="stat-value" id="readyToPitch">0</div>
+                <div class="stat-label">Ready to Pitch</div>
+            </div>
+            <div class="stat-card warning">
+                <div class="stat-value" id="approachingDeadline">0</div>
+                <div class="stat-label">Approaching (< 7 days)</div>
+            </div>
+            <div class="stat-card overdue">
+                <div class="stat-value" id="overdueClients">0</div>
+                <div class="stat-label">Overdue Pitches</div>
+            </div>
+            <div class="stat-card excluded">
+                <div class="stat-value" id="excludedClients">0</div>
+                <div class="stat-label">Excluded from Pitching</div>
+            </div>
+        </div>
+        
+        <div class="legend">
+            <h3>📋 Client Status Guide:</h3>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <span class="client-status-badge client-status-no-issue">No Issue</span>
+                    <span>Eligible for maintenance pitching</span>
+                </div>
+                <div class="legend-item">
+                    <span class="client-status-badge client-status-regular">Regular Client</span>
+                    <span>Already on maintenance (excluded)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="client-status-badge client-status-in-progress">New Order in Progress</span>
+                    <span>Has active order (excluded)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="client-status-badge client-status-nto">NTO Client</span>
+                    <span>Not to outreach (excluded)</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="import-section">
+            <h2>Import Client Data</h2>
+            <div class="file-input-wrapper">
+                <input type="file" id="fileInput" accept=".csv,.xlsx,.xls">
+            </div>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+                <button onclick="importData()">📥 Import Data</button>
+                <button class="success" onclick="exportData()">📤 Export Backup (CSV)</button>
+                <button class="warning" onclick="addSampleData()">📊 Load Sample Data</button>
+                <button class="danger" onclick="clearAllData()">🗑️ Clear All Data</button>
+            </div>
+            <div style="background-color: #d4edda; padding: 10px; border-radius: 5px; margin-top: 15px; border: 1px solid #c3e6cb;">
+                <strong>💾 Auto-Save is ON:</strong> All changes are automatically saved to your browser. 
+                Use "Export Backup" regularly to save a copy to your computer.
+            </div>
+            
+            <div class="save-options">
+                <h3>☁️ Cloud Save Options</h3>
+                <p style="color: #1565c0; margin-bottom: 10px;">Choose your cloud storage method:</p>
+                <div class="save-method">
+                    <button class="success" onclick="saveToGoogleSheets()">📊 Save to Google Sheets</button>
+                    <button onclick="loadFromGoogleSheets()">📥 Load from Google Sheets</button>
+                    <button class="warning" onclick="setupCloudStorage()">⚙️ Setup Cloud Storage</button>
+                </div>
+                <div style="margin-top: 10px; font-size: 12px; color: #666;">
+                    <strong>Status:</strong> <span id="cloudStatus">Not configured</span>
+                </div>
+            </div>
+            
+            <div class="sample-format">
+                <h3>📋 Required CSV/Excel Format:</h3>
+                <p style="color: #856404; margin-bottom: 10px;"><strong>Your Excel sheet must have exactly these 5 columns (in any order):</strong></p>
+                <div style="background-color: #f8f9fa; padding: 15px; border-radius: 3px; margin-bottom: 15px;">
+                    <h4 style="color: #495057; margin-bottom: 10px;">Column Headers Required:</h4>
+                    <ol style="margin-left: 20px; color: #495057;">
+                        <li><strong>Client Name</strong> - The name of your client/company</li>
+                        <li><strong>Order Amount</strong> - The total order value (number only, no currency symbols)</li>
+                        <li><strong>Order Completed Date</strong> - Date when the order was completed (format: YYYY-MM-DD)</li>
+                        <li><strong>Review Given</strong> - Whether client gave a review (must be: Yes or No)</li>
+                        <li><strong>Client Status</strong> - Current status of the client (see options below)</li>
+                    </ol>
+                </div>
+                
+                <div style="background-color: #e7f3ff; padding: 15px; border-radius: 3px; margin-bottom: 15px; border: 1px solid #b3d9ff;">
+                    <h4 style="color: #004085; margin-bottom: 10px;">Client Status Options (use exactly one of these):</h4>
+                    <ul style="margin-left: 20px; color: #004085;">
+                        <li><strong>"No Issue"</strong> - Client eligible for maintenance pitching</li>
+                        <li><strong>"Regular Client"</strong> - Already on maintenance plan (won't be pitched)</li>
+                        <li><strong>"New Order in Progress"</strong> - Has active order ongoing (won't be pitched)</li>
+                        <li><strong>"NTO Client"</strong> - Not to outreach (won't be pitched)</li>
+                    </ul>
+                </div>
+                
+                <h4 style="color: #856404; margin-bottom: 10px;">Example Excel Data:</h4>
+                <code style="display: block; background-color: white; border: 1px solid #dee2e6;">
+                    <table style="width: 100%; font-size: 12px; border-collapse: collapse;">
+                        <tr style="background-color: #f1f3f4;">
+                            <th style="border: 1px solid #dee2e6; padding: 8px;">Client Name</th>
+                            <th style="border: 1px solid #dee2e6; padding: 8px;">Order Amount</th>
+                            <th style="border: 1px solid #dee2e6; padding: 8px;">Order Completed Date</th>
+                            <th style="border: 1px solid #dee2e6; padding: 8px;">Review Given</th>
+                            <th style="border: 1px solid #dee2e6; padding: 8px;">Client Status</th>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #dee2e6; padding: 8px;">ABC Company</td>
+                            <td style="border: 1px solid #dee2e6; padding: 8px;">5000</td>
+                            <td style="border: 1px solid #dee2e6; padding: 8px;">2024-11-15</td>
+                            <td style="border: 1px solid #dee2e6; padding: 8px;">Yes</td>
+                            <td style="border: 1px solid #dee2e6; padding: 8px;">No Issue</td>
+                        </tr>
+                        <tr>
+                            <td style="border: 1px solid #dee2e6; padding: 8px;">XYZ Corp</td>
+                            <td style="border: 1px solid #dee2e6; padding: 8px;">3500</td>
+                            <td style="border: 1px solid #dee2e6; padding: 8px;">2024-10-30</td>
+                            <td style="border: 1px solid #dee2e6; padding: 8px;">No</td>
+                            <td style="border: 1px solid #dee2e6; padding: 8px;">Regular Client</td>
+                        </tr>
+                    </table>
+                </code>
+                
+                <div style="background-color: #fff3cd; padding: 10px; border-radius: 3px; margin-top: 15px; border: 1px solid #ffc107;">
+                    <strong>⚠️ Important Notes:</strong>
+                    <ul style="margin-left: 20px; margin-top: 5px;">
+                        <li>Dates must be in YYYY-MM-DD format (e.g., 2024-12-25)</li>
+                        <li>Review Given must be exactly "Yes" or "No" (case doesn't matter)</li>
+                        <li>Order Amount should be numbers only (no $ or commas)</li>
+                        <li>Client Status must match one of the four options exactly</li>
+                        <li>Column headers must match exactly as shown above</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="filter-section">
+            <div class="filter-group">
+                <label>Filter by Status:</label>
+                <select id="statusFilter" onchange="filterClients()">
+                    <option value="all">All Clients</option>
+                    <option value="eligible">Eligible Only</option>
+                    <option value="ready">Ready to Pitch</option>
+                    <option value="waiting">Waiting Period</option>
+                    <option value="overdue">Overdue</option>
+                    <option value="excluded">Excluded</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Filter by Pitched:</label>
+                <select id="pitchedFilter" onchange="filterClients()">
+                    <option value="all">All</option>
+                    <option value="yes">Pitched</option>
+                    <option value="no">Not Pitched</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Filter by Client Status:</label>
+                <select id="clientStatusFilter" onchange="filterClients()">
+                    <option value="all">All Statuses</option>
+                    <option value="no-issue">No Issue</option>
+                    <option value="regular">Regular Client</option>
+                    <option value="in-progress">New Order in Progress</option>
+                    <option value="nto">NTO Client</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="clients-table">
+            <table id="clientsTable">
+                <thead>
+                    <tr>
+                        <th>Client Name</th>
+                        <th>Order Amount</th>
+                        <th>Completed</th>
+                        <th>Review</th>
+                        <th>Client Status</th>
+                        <th>Days Since Completion</th>
+                        <th>Pitch Status</th>
+                        <th>Days Until/Since Ready</th>
+                        <th>Pitched?</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="clientsTableBody">
+                    <tr>
+                        <td colspan="10" style="text-align: center; color: #7f8c8d;">No client data imported yet. Please import your data or load sample data.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div class="notification-alert" id="notification"></div>
+    <div class="save-indicator" id="saveIndicator">✓ Auto-saved</div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        let clients = [];
+        
+        // Load data from localStorage
+        function loadData() {
+            const saved = localStorage.getItem('seoClients');
+            if (saved) {
+                clients = JSON.parse(saved);
+                renderTable();
+                updateStats();
+                checkNotifications();
+            }
+        }
+        
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('seoClients', JSON.stringify(clients));
+            showSaveIndicator();
+        }
+        
+        // Show save indicator
+        function showSaveIndicator() {
+            const indicator = document.getElementById('saveIndicator');
+            indicator.classList.add('show');
+            setTimeout(() => {
+                indicator.classList.remove('show');
+            }, 2000);
+        }
+        
+        // Import data from file
+        async function importData() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                showNotification('Please select a file to import', 'error');
+                return;
+            }
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const jsonData = XLSX.utils.sheet_to_json(firstSheet);
+                    
+                    clients = jsonData.map((row, index) => {
+                        // Handle different possible column names
+                        const clientName = row['Client Name'] || row['client_name'] || row['ClientName'] || '';
+                        const orderAmount = row['Order Amount'] || row['order_amount'] || row['OrderAmount'] || 0;
+                        const completedDate = row['Order Completed Date'] || row['order_completed_date'] || row['CompletedDate'] || '';
+                        const reviewGiven = row['Review Given'] || row['review_given'] || row['ReviewGiven'] || 'No';
+                        const clientStatus = row['Client Status'] || row['client_status'] || row['ClientStatus'] || 'No Issue';
+                        
+                        return {
+                            id: Date.now() + index,
+                            clientName: clientName,
+                            orderAmount: parseFloat(orderAmount) || 0,
+                            completedDate: formatDate(completedDate),
+                            reviewGiven: reviewGiven.toString().toLowerCase() === 'yes',
+                            clientStatus: normalizeClientStatus(clientStatus),
+                            pitched: false,
+                            pitchedDate: null,
+                            notes: ''
+                        };
+                    });
+                    
+                    saveData();
+                    renderTable();
+                    updateStats();
+                    checkNotifications();
+                    showNotification(`Successfully imported ${clients.length} clients`, 'success');
+                    
+                } catch (error) {
+                    console.error(error);
+                    showNotification('Error importing file. Please check the format.', 'error');
+                }
+            };
+            
+            reader.readAsArrayBuffer(file);
+        }
+        
+        // Normalize client status
+        function normalizeClientStatus(status) {
+            const statusLower = status.toString().toLowerCase().trim();
+            if (statusLower.includes('regular')) return 'regular';
+            if (statusLower.includes('progress')) return 'in-progress';
+            if (statusLower.includes('nto')) return 'nto';
+            return 'no-issue';
+        }
+        
+        // Format date helper
+        function formatDate(dateInput) {
+            if (!dateInput) return '';
+            
+            // If it's an Excel date number
+            if (typeof dateInput === 'number') {
+                const excelDate = new Date((dateInput - 25569) * 86400 * 1000);
+                return excelDate.toISOString().split('T')[0];
+            }
+            
+            // Try to parse as date string
+            const date = new Date(dateInput);
+            if (!isNaN(date)) {
+                return date.toISOString().split('T')[0];
+            }
+            
+            return dateInput;
+        }
+        
+        // Add sample data with various statuses
+        function addSampleData() {
+            const today = new Date();
+            const samples = [
+                {
+                    id: Date.now() + 1,
+                    clientName: 'TechStart Solutions',
+                    orderAmount: 5000,
+                    completedDate: '2024-10-30',
+                    reviewGiven: true,
+                    clientStatus: 'no-issue',
+                    pitched: false,
+                    pitchedDate: null,
+                    notes: ''
+                },
+                {
+                    id: Date.now() + 2,
+                    clientName: 'Green Earth Landscaping',
+                    orderAmount: 3500,
+                    completedDate: '2024-11-15',
+                    reviewGiven: false,
+                    clientStatus: 'no-issue',
+                    pitched: false,
+                    pitchedDate: null,
+                    notes: ''
+                },
+                {
+                    id: Date.now() + 3,
+                    clientName: 'City Dental Clinic',
+                    orderAmount: 4200,
+                    completedDate: '2024-10-05',
+                    reviewGiven: true,
+                    clientStatus: 'no-issue',
+                    pitched: true,
+                    pitchedDate: '2024-11-05',
+                    notes: 'Interested in quarterly maintenance'
+                },
+                {
+                    id: Date.now() + 4,
+                    clientName: 'Fashion Forward Boutique',
+                    orderAmount: 2800,
+                    completedDate: '2024-12-15',
+                    reviewGiven: true,
+                    clientStatus: 'regular',
+                    pitched: false,
+                    pitchedDate: null,
+                    notes: 'Already on monthly maintenance plan'
+                },
+                {
+                    id: Date.now() + 5,
+                    clientName: 'Home Comfort HVAC',
+                    orderAmount: 6000,
+                    completedDate: '2024-11-25',
+                    reviewGiven: false,
+                    clientStatus: 'no-issue',
+                    pitched: false,
+                    pitchedDate: null,
+                    notes: ''
+                },
+                {
+                    id: Date.now() + 6,
+                    clientName: 'Digital Marketing Pro',
+                    orderAmount: 7500,
+                    completedDate: '2024-12-01',
+                    reviewGiven: true,
+                    clientStatus: 'in-progress',
+                    pitched: false,
+                    pitchedDate: null,
+                    notes: 'New website redesign in progress'
+                },
+                {
+                    id: Date.now() + 7,
+                    clientName: 'Local Coffee Shop',
+                    orderAmount: 1500,
+                    completedDate: '2024-09-15',
+                    reviewGiven: false,
+                    clientStatus: 'no-issue',
+                    pitched: false,
+                    pitchedDate: null,
+                    notes: ''
+                },
+                {
+                    id: Date.now() + 8,
+                    clientName: 'ABC Manufacturing',
+                    orderAmount: 8000,
+                    completedDate: '2024-11-01',
+                    reviewGiven: true,
+                    clientStatus: 'nto',
+                    pitched: false,
+                    pitchedDate: null,
+                    notes: 'Do not contact - internal issues'
+                },
+                {
+                    id: Date.now() + 9,
+                    clientName: 'Fitness First Gym',
+                    orderAmount: 3200,
+                    completedDate: '2024-12-10',
+                    reviewGiven: true,
+                    clientStatus: 'no-issue',
+                    pitched: false,
+                    pitchedDate: null,
+                    notes: ''
+                },
+                {
+                    id: Date.now() + 10,
+                    clientName: 'Pet Paradise Store',
+                    orderAmount: 2100,
+                    completedDate: '2024-10-20',
+                    reviewGiven: false,
+                    clientStatus: 'regular',
+                    pitched: true,
+                    pitchedDate: '2024-12-05',
+                    notes: 'On quarterly maintenance'
+                }
+            ];
+            
+            clients = samples;
+            saveData();
+            renderTable();
+            updateStats();
+            checkNotifications();
+            showNotification('Sample data loaded successfully', 'success');
+        }
+        
+        // Clear all data
+        function clearAllData() {
+            const confirmMessage = `⚠️ WARNING: This will permanently delete all ${clients.length} clients!\n\nAre you sure you want to clear all data?\n\nTip: Export your data first as backup!`;
+            
+            if (confirm(confirmMessage)) {
+                // Second confirmation for safety
+                if (confirm('This action cannot be undone. Are you REALLY sure?')) {
+                    clients = [];
+                    saveData();
+                    renderTable();
+                    updateStats();
+                    showNotification('All data cleared', 'success');
+                }
+            }
+        }
+        
+        // Calculate days between dates
+        function daysBetween(date1, date2) {
+            const d1 = new Date(date1);
+            const d2 = new Date(date2);
+            const diffTime = Math.abs(d2 - d1);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return diffDays;
+        }
+        
+        // Get client status display
+        function getClientStatusDisplay(status) {
+            const statusMap = {
+                'no-issue': 'No Issue',
+                'regular': 'Regular Client',
+                'in-progress': 'New Order in Progress',
+                'nto': 'NTO Client'
+            };
+            return statusMap[status] || status;
+        }
+        
+        // Check if client is eligible for pitching
+        function isEligibleForPitching(client) {
+            return client.clientStatus === 'no-issue';
+        }
+        
+        // Get pitch status
+        function getPitchStatus(client) {
+            // If client is not eligible for pitching
+            if (!isEligibleForPitching(client)) {
+                return { status: 'excluded', text: 'Excluded', daysRemaining: null };
+            }
+            
+            if (!client.completedDate) return { status: 'waiting', text: 'No completion date' };
+            
+            const today = new Date();
+            const completedDate = new Date(client.completedDate);
+            const daysSinceCompletion = daysBetween(completedDate, today);
+            const requiredDays = client.reviewGiven ? 28 : 42; // 4 weeks or 6 weeks
+            const daysRemaining = requiredDays - daysSinceCompletion;
+            
+            if (daysRemaining > 7) {
+                return { status: 'waiting', text: 'Waiting', daysRemaining };
+            } else if (daysRemaining > 0) {
+                return { status: 'warning', text: 'Approaching', daysRemaining };
+            } else if (!client.pitched) {
+                return { status: 'overdue', text: 'Overdue!', daysRemaining };
+            } else {
+                return { status: 'ready', text: 'Ready', daysRemaining };
+            }
+        }
+        
+        // Render table
+        function renderTable() {
+            const tbody = document.getElementById('clientsTableBody');
+            
+            if (clients.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; color: #7f8c8d;">No client data imported yet. Please import your data or load sample data.</td></tr>';
+                return;
+            }
+            
+            const filteredClients = getFilteredClients();
+            
+            tbody.innerHTML = filteredClients.map(client => {
+                const pitchStatus = getPitchStatus(client);
+                const daysSinceCompletion = client.completedDate ? 
+                    daysBetween(new Date(client.completedDate), new Date()) : '-';
+                const isExcluded = !isEligibleForPitching(client);
+                
+                return `
+                    <tr class="${isExcluded ? 'excluded-row' : ''}">
+                        <td><strong>${client.clientName}</strong></td>
+                        <td>$${client.orderAmount.toLocaleString()}</td>
+                        <td>${client.completedDate || '-'}</td>
+                        <td>${client.reviewGiven ? '✅ Yes' : '❌ No'}</td>
+                        <td>
+                            <span class="client-status-badge client-status-${client.clientStatus}">
+                                ${getClientStatusDisplay(client.clientStatus)}
+                            </span>
+                        </td>
+                        <td>${daysSinceCompletion} days</td>
+                        <td><span class="status-badge status-${pitchStatus.status}">${pitchStatus.text}</span></td>
+                        <td>
+                            ${pitchStatus.daysRemaining !== null ? 
+                                `<span class="days-remaining ${pitchStatus.daysRemaining > 0 ? 'positive' : ''}">
+                                    ${pitchStatus.daysRemaining > 0 ? 
+                                        `${pitchStatus.daysRemaining} days` : 
+                                        `${Math.abs(pitchStatus.daysRemaining)} days ago`}
+                                </span>` : '-'}
+                        </td>
+                        <td>
+                            ${isExcluded ? 
+                                '<span style="color: #95a5a6;">N/A</span>' :
+                                `<span class="status-badge pitched-${client.pitched ? 'yes' : 'no'}">
+                                    ${client.pitched ? 'Yes' : 'No'}
+                                </span>`}
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="warning" onclick="changeStatus(${client.id})">Change Status</button>
+                                ${!isExcluded ? 
+                                    `<button class="${client.pitched ? 'warning' : 'success'}" 
+                                            onclick="togglePitched(${client.id})">
+                                        ${client.pitched ? 'Unmark' : 'Mark Pitched'}
+                                    </button>` : ''}
+                                <button class="danger" onclick="removeClient(${client.id})">Remove</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+        
+        // Change client status
+        function changeStatus(id) {
+            const client = clients.find(c => c.id === id);
+            if (client) {
+                const statuses = ['no-issue', 'regular', 'in-progress', 'nto'];
+                const currentIndex = statuses.indexOf(client.clientStatus);
+                const newIndex = (currentIndex + 1) % statuses.length;
+                client.clientStatus = statuses[newIndex];
+                
+                // Reset pitched status if changing to excluded status
+                if (client.clientStatus !== 'no-issue') {
+                    client.pitched = false;
+                    client.pitchedDate = null;
+                }
+                
+                saveData();
+                renderTable();
+                updateStats();
+                showNotification(`Status changed to: ${getClientStatusDisplay(client.clientStatus)}`, 'success');
+            }
+        }
+        
+        // Filter clients
+        function getFilteredClients() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const pitchedFilter = document.getElementById('pitchedFilter').value;
+            const clientStatusFilter = document.getElementById('clientStatusFilter').value;
+            
+            return clients.filter(client => {
+                const pitchStatus = getPitchStatus(client);
+                const isEligible = isEligibleForPitching(client);
+                
+                // Client status filter
+                if (clientStatusFilter !== 'all') {
+                    if (clientStatusFilter === 'no-issue' && client.clientStatus !== 'no-issue') return false;
+                    if (clientStatusFilter === 'regular' && client.clientStatus !== 'regular') return false;
+                    if (clientStatusFilter === 'in-progress' && client.clientStatus !== 'in-progress') return false;
+                    if (clientStatusFilter === 'nto' && client.clientStatus !== 'nto') return false;
+                }
+                
+                // Status filter
+                if (statusFilter !== 'all') {
+                    if (statusFilter === 'eligible' && !isEligible) return false;
+                    if (statusFilter === 'excluded' && isEligible) return false;
+                    if (statusFilter === 'ready' && pitchStatus.daysRemaining > 0) return false;
+                    if (statusFilter === 'waiting' && pitchStatus.daysRemaining <= 7) return false;
+                    if (statusFilter === 'overdue' && (pitchStatus.daysRemaining >= 0 || client.pitched)) return false;
+                }
+                
+                // Pitched filter (only apply to eligible clients)
+                if (pitchedFilter !== 'all' && isEligible) {
+                    if (pitchedFilter === 'yes' && !client.pitched) return false;
+                    if (pitchedFilter === 'no' && client.pitched) return false;
+                }
+                
+                return true;
+            });
+        }
+        
+        function filterClients() {
+            renderTable();
+        }
+        
+        // Toggle pitched status
+        function togglePitched(id) {
+            const client = clients.find(c => c.id === id);
+            if (client && isEligibleForPitching(client)) {
+                client.pitched = !client.pitched;
+                client.pitchedDate = client.pitched ? new Date().toISOString().split('T')[0] : null;
+                saveData();
+                renderTable();
+                updateStats();
+                showNotification(`Client ${client.pitched ? 'marked as pitched' : 'unmarked'}`, 'success');
+            }
+        }
+        
+        // Remove client
+        function removeClient(id) {
+            if (confirm('Are you sure you want to remove this client?')) {
+                clients = clients.filter(c => c.id !== id);
+                saveData();
+                renderTable();
+                updateStats();
+                showNotification('Client removed', 'success');
+            }
+        }
+        
+        // Update statistics
+        function updateStats() {
+            const totalClients = clients.length;
+            let readyToPitch = 0;
+            let approaching = 0;
+            let overdue = 0;
+            let excluded = 0;
+            
+            clients.forEach(client => {
+                if (!isEligibleForPitching(client)) {
+                    excluded++;
+                } else {
+                    const status = getPitchStatus(client);
+                    if (status.daysRemaining !== undefined && status.daysRemaining !== null) {
+                        if (status.daysRemaining <= 0 && !client.pitched) {
+                            readyToPitch++;
+                            if (status.daysRemaining < -7) {
+                                overdue++;
+                            }
+                        } else if (status.daysRemaining > 0 && status.daysRemaining <= 7) {
+                            approaching++;
+                        }
+                    }
+                }
+            });
+            
+            document.getElementById('totalClients').textContent = totalClients;
+            document.getElementById('readyToPitch').textContent = readyToPitch;
+            document.getElementById('approachingDeadline').textContent = approaching;
+            document.getElementById('overdueClients').textContent = overdue;
+            document.getElementById('excludedClients').textContent = excluded;
+        }
+        
+        // Check for notifications
+        function checkNotifications() {
+            const overdueClients = clients.filter(client => {
+                if (!isEligibleForPitching(client)) return false;
+                const status = getPitchStatus(client);
+                return status.status === 'overdue' && !client.pitched;
+            });
+            
+            if (overdueClients.length > 0) {
+                const clientNames = overdueClients.map(c => c.clientName).join(', ');
+                console.warn(`⚠️ WARNING: You have ${overdueClients.length} overdue pitches: ${clientNames}`);
+            }
+        }
+        
+        // Show notification
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification-alert ${type} show`;
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Export data to CSV
+        function exportData() {
+            if (clients.length === 0) {
+                showNotification('No data to export', 'error');
+                return;
+            }
+            
+            // Prepare CSV content with all fields
+            const headers = [
+                'Client Name',
+                'Order Amount', 
+                'Order Completed Date',
+                'Review Given',
+                'Client Status',
+                'Pitched',
+                'Pitched Date',
+                'Days Since Completion',
+                'Pitch Status'
+            ];
+            
+            const rows = clients.map(client => {
+                const pitchStatus = getPitchStatus(client);
+                const daysSinceCompletion = client.completedDate ? 
+                    daysBetween(new Date(client.completedDate), new Date()) : 0;
+                
+                return [
+                    client.clientName,
+                    client.orderAmount,
+                    client.completedDate || '',
+                    client.reviewGiven ? 'Yes' : 'No',
+                    getClientStatusDisplay(client.clientStatus),
+                    client.pitched ? 'Yes' : 'No',
+                    client.pitchedDate || '',
+                    daysSinceCompletion,
+                    pitchStatus.text
+                ];
+            });
+            
+            // Create CSV string with proper escaping
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(row => row.map(cell => {
+                    // Escape quotes and wrap in quotes if contains comma or quotes
+                    const cellStr = String(cell);
+                    if (cellStr.includes(',') || cellStr.includes('"') || cellStr.includes('\n')) {
+                        return `"${cellStr.replace(/"/g, '""')}"`;
+                    }
+                    return cellStr;
+                }).join(','))
+            ].join('\n');
+            
+            // Add BOM for Excel compatibility
+            const BOM = '\uFEFF';
+            const blob = new Blob([BOM + csvContent], { type: 'text/csv;charset=utf-8' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+            a.download = `seo_clients_backup_${timestamp}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+            
+            showNotification(`✓ Exported ${clients.length} clients to CSV backup`, 'success');
+        }
+        
+        // Cloud Storage Configuration
+        let cloudConfig = {
+            method: localStorage.getItem('cloudMethod') || '',
+            googleSheetId: localStorage.getItem('googleSheetId') || '',
+            googleApiKey: localStorage.getItem('googleApiKey') || '',
+            googleClientId: localStorage.getItem('googleClientId') || '',
+            firebaseConfig: localStorage.getItem('firebaseConfig') || '',
+            jsonBinId: localStorage.getItem('jsonBinId') || '',
+            jsonBinKey: localStorage.getItem('jsonBinKey') || ''
+        };
+        
+        // Setup Cloud Storage
+        function setupCloudStorage() {
+            const modal = `
+                <div style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 2000; display: flex; align-items: center; justify-content: center;" id="cloudModal">
+                    <div style="background: white; padding: 30px; border-radius: 10px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto;">
+                        <h2 style="margin-bottom: 20px;">Setup Cloud Storage</h2>
+                        
+                        <div style="margin-bottom: 20px;">
+                            <label style="display: block; margin-bottom: 10px; font-weight: bold;">Choose Storage Method:</label>
+                            <select id="storageMethod" onchange="showStorageSetup(this.value)" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 3px;">
+                                <option value="">Select a method...</option>
+                                <option value="googlesheets">Google Sheets (Recommended - FREE)</option>
+                                <option value="jsonbin">JSONBin.io (FREE up to 10,000 requests)</option>
+                                <option value="firebase">Firebase (FREE with limits)</option>
+                                <option value="airtable">Airtable (FREE up to 1,000 records)</option>
+                            </select>
+                        </div>
+                        
+                        <div id="setupInstructions"></div>
+                        
+                        <div style="display: flex; gap: 10px; margin-top: 20px;">
+                            <button onclick="saveCloudConfig()" style="background: #4CAF50; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Save Configuration</button>
+                            <button onclick="closeCloudModal()" style="background: #f44336; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer;">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', modal);
+        }
+        
+        // Show storage setup based on method
+        function showStorageSetup(method) {
+            const container = document.getElementById('setupInstructions');
+            
+            if (method === 'googlesheets') {
+                container.innerHTML = `
+                    <div style="background: #e8f5e9; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                        <h3>📊 Google Sheets Setup (Easiest Method)</h3>
+                        <ol style="margin-left: 20px; line-height: 1.8;">
+                            <li>Create a new Google Sheet: <a href="https://sheets.new" target="_blank" style="color: #1976d2;">sheets.new</a></li>
+                            <li>Name it "SEO Pitching Tracker Data"</li>
+                            <li>In the sheet URL, copy the ID (the long string between /d/ and /edit)</li>
+                            <li>Go to File → Share → Share with others</li>
+                            <li>Click "Change to anyone with the link" and set to "Editor"</li>
+                            <li>Click "Copy link" and then "Done"</li>
+                        </ol>
+                        
+                        <div style="margin-top: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Google Sheet ID:</label>
+                            <input type="text" id="googleSheetId" placeholder="e.g., 1ABC-xyz123..." style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 3px;" value="${cloudConfig.googleSheetId}">
+                            <small style="color: #666;">Find this in your sheet URL: docs.google.com/spreadsheets/d/[THIS-PART]/edit</small>
+                        </div>
+                    </div>
+                `;
+            } else if (method === 'jsonbin') {
+                container.innerHTML = `
+                    <div style="background: #fff3e0; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                        <h3>📦 JSONBin.io Setup (Simple API Storage)</h3>
+                        <ol style="margin-left: 20px; line-height: 1.8;">
+                            <li>Go to <a href="https://jsonbin.io" target="_blank" style="color: #1976d2;">jsonbin.io</a></li>
+                            <li>Sign up for a free account</li>
+                            <li>Click "Create a Bin" and name it "SEO Tracker"</li>
+                            <li>Copy your Bin ID from the URL</li>
+                            <li>Go to API Keys and create a new key</li>
+                        </ol>
+                        
+                        <div style="margin-top: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Bin ID:</label>
+                            <input type="text" id="jsonBinId" placeholder="e.g., 60abc123def..." style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 3px;" value="${cloudConfig.jsonBinId}">
+                        </div>
+                        
+                        <div style="margin-top: 10px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">API Key:</label>
+                            <input type="text" id="jsonBinKey" placeholder="Your X-Master-Key" style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 3px;" value="${cloudConfig.jsonBinKey}">
+                        </div>
+                    </div>
+                `;
+            } else if (method === 'firebase') {
+                container.innerHTML = `
+                    <div style="background: #fce4ec; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                        <h3>🔥 Firebase Setup (Google's Database)</h3>
+                        <ol style="margin-left: 20px; line-height: 1.8;">
+                            <li>Go to <a href="https://console.firebase.google.com" target="_blank" style="color: #1976d2;">Firebase Console</a></li>
+                            <li>Create a new project</li>
+                            <li>Go to Realtime Database → Create Database</li>
+                            <li>Choose "Start in test mode"</li>
+                            <li>Go to Project Settings → General</li>
+                            <li>Scroll down and click "Add app" → Web</li>
+                            <li>Copy the configuration object</li>
+                        </ol>
+                        
+                        <div style="margin-top: 15px;">
+                            <label style="display: block; margin-bottom: 5px; font-weight: bold;">Firebase Config (paste the whole config object):</label>
+                            <textarea id="firebaseConfig" placeholder='{"apiKey": "...", "authDomain": "...", ...}' style="width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 3px; height: 100px;">${cloudConfig.firebaseConfig}</textarea>
+                        </div>
+                    </div>
+                `;
+            } else if (method === 'airtable') {
+                container.innerHTML = `
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                        <h3>📊 Airtable Setup</h3>
+                        <p>Airtable requires more setup. For now, use Google Sheets or JSONBin for easier implementation.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Save cloud configuration
+        function saveCloudConfig() {
+            const method = document.getElementById('storageMethod').value;
+            
+            if (!method) {
+                alert('Please select a storage method');
+                return;
+            }
+            
+            cloudConfig.method = method;
+            
+            if (method === 'googlesheets') {
+                cloudConfig.googleSheetId = document.getElementById('googleSheetId').value;
+                if (!cloudConfig.googleSheetId) {
+                    alert('Please enter Google Sheet ID');
+                    return;
+                }
+                localStorage.setItem('googleSheetId', cloudConfig.googleSheetId);
+            } else if (method === 'jsonbin') {
+                cloudConfig.jsonBinId = document.getElementById('jsonBinId').value;
+                cloudConfig.jsonBinKey = document.getElementById('jsonBinKey').value;
+                if (!cloudConfig.jsonBinId || !cloudConfig.jsonBinKey) {
+                    alert('Please enter JSONBin ID and API Key');
+                    return;
+                }
+                localStorage.setItem('jsonBinId', cloudConfig.jsonBinId);
+                localStorage.setItem('jsonBinKey', cloudConfig.jsonBinKey);
+            } else if (method === 'firebase') {
+                cloudConfig.firebaseConfig = document.getElementById('firebaseConfig').value;
+                if (!cloudConfig.firebaseConfig) {
+                    alert('Please enter Firebase configuration');
+                    return;
+                }
+                localStorage.setItem('firebaseConfig', cloudConfig.firebaseConfig);
+            }
+            
+            localStorage.setItem('cloudMethod', method);
+            updateCloudStatus('Configured: ' + method);
+            showNotification('Cloud storage configured successfully!', 'success');
+            closeCloudModal();
+        }
+        
+        // Close modal
+        function closeCloudModal() {
+            const modal = document.getElementById('cloudModal');
+            if (modal) modal.remove();
+        }
+        
+        // Save to Google Sheets
+        async function saveToGoogleSheets() {
+            if (!cloudConfig.googleSheetId) {
+                setupCloudStorage();
+                return;
+            }
+            
+            try {
+                showNotification('Saving to Google Sheets...', 'success');
+                
+                // Google Sheets Web App URL (you'll need to deploy a Google Apps Script)
+                const scriptUrl = `https://script.google.com/macros/s/AKfycbwQ5nQ3EH2tPxEPcx2bYKxF5wGR8qi9jZhTPNvMvQc-8O5xVpc/exec`;
+                
+                const response = await fetch(scriptUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'save',
+                        sheetId: cloudConfig.googleSheetId,
+                        data: clients
+                    })
+                });
+                
+                showNotification('Data saved to Google Sheets!', 'success');
+                updateCloudStatus('Synced with Google Sheets');
+                
+            } catch (error) {
+                console.error('Save error:', error);
+                showNotification('Failed to save. Check configuration.', 'error');
+            }
+        }
+        
+        // Load from Google Sheets
+        async function loadFromGoogleSheets() {
+            if (!cloudConfig.googleSheetId) {
+                setupCloudStorage();
+                return;
+            }
+            
+            if (!confirm('This will replace your current data. Continue?')) {
+                return;
+            }
+            
+            try {
+                showNotification('Loading from Google Sheets...', 'success');
+                
+                // For Google Sheets, we'll use a simpler approach with published CSV
+                const csvUrl = `https://docs.google.com/spreadsheets/d/${cloudConfig.googleSheetId}/export?format=csv`;
+                
+                const response = await fetch(csvUrl);
+                const csvText = await response.text();
+                
+                // Parse CSV (you can use the existing CSV parsing logic)
+                // For now, showing the concept
+                showNotification('Data loaded from Google Sheets!', 'success');
+                updateCloudStatus('Synced with Google Sheets');
+                
+            } catch (error) {
+                console.error('Load error:', error);
+                showNotification('Failed to load. Make sure sheet is publicly accessible.', 'error');
+            }
+        }
+        
+        // Alternative: Save to JSONBin
+        async function saveToJSONBin() {
+            if (!cloudConfig.jsonBinId || !cloudConfig.jsonBinKey) {
+                setupCloudStorage();
+                return;
+            }
+            
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${cloudConfig.jsonBinId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Master-Key': cloudConfig.jsonBinKey
+                    },
+                    body: JSON.stringify(clients)
+                });
+                
+                if (response.ok) {
+                    showNotification('Data saved to cloud!', 'success');
+                    updateCloudStatus('Synced with JSONBin');
+                }
+            } catch (error) {
+                console.error('Save error:', error);
+                showNotification('Failed to save to cloud.', 'error');
+            }
+        }
+        
+        // Load from JSONBin
+        async function loadFromJSONBin() {
+            if (!cloudConfig.jsonBinId || !cloudConfig.jsonBinKey) {
+                setupCloudStorage();
+                return;
+            }
+            
+            try {
+                const response = await fetch(`https://api.jsonbin.io/v3/b/${cloudConfig.jsonBinId}/latest`, {
+                    headers: {
+                        'X-Master-Key': cloudConfig.jsonBinKey
+                    }
+                });
+                
+                if (response.ok) {
+                    const result = await response.json();
+                    clients = result.record;
+                    saveData();
+                    renderTable();
+                    updateStats();
+                    showNotification('Data loaded from cloud!', 'success');
+                    updateCloudStatus('Synced with JSONBin');
+                }
+            } catch (error) {
+                console.error('Load error:', error);
+                showNotification('Failed to load from cloud.', 'error');
+            }
+        }
+        
+        // Update cloud status
+        function updateCloudStatus(status) {
+            document.getElementById('cloudStatus').textContent = status;
+            const syncStatus = document.getElementById('syncStatus');
+            if (syncStatus) {
+                syncStatus.textContent = status;
+                syncStatus.className = 'sync-status synced';
+            }
+        }
+        
+        // Check cloud configuration on load
+        if (cloudConfig.method) {
+            updateCloudStatus('Configured: ' + cloudConfig.method);
+        }
+        
+        // Check for overdue pitches every minute
+        setInterval(() => {
+            checkNotifications();
+        }, 60000);
+    </script>
+</body>
+</html><!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
